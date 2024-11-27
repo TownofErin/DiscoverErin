@@ -45,7 +45,7 @@ const Navigation = () => {
               Our Town
             </Link>
             <Link 
-              to="/explore-businesses" 
+              to="/business-directory" 
               className="px-3 py-2 text-base font-medium text-white hover:text-gray-200 transition-colors"
             >
               Explore our Businesses
@@ -139,7 +139,7 @@ const Navigation = () => {
             Our Town
           </Link>
           <Link
-            to="/explore-businesses"
+            to="/business-directory"
             className="block px-3 py-2 text-base font-medium text-white hover:text-gray-200 transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >
