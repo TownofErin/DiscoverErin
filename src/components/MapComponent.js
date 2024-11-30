@@ -1,13 +1,75 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-const MapComponent = ({ businesses = [] }) => {
+const MapComponent = forwardRef(({ businesses = [] }, ref) => {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const markers = useRef([]);
+  const markers = useRef(new Map()); // Using Map to store markers with business IDs
+  const popup = useRef(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Create popup content
+  const createPopupContent = (business) => `
+    <div class="w-[280px] bg-white shadow-lg">
+      ${business.picture ? `
+        <div class="w-full h-[180px] overflow-hidden">
+          <img 
+            src="${business.picture}" 
+            alt="${business.name}"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      ` : ''}
+      <div class="p-4">
+        <h3 class="text-xl font-bold text-gray-900 mb-2">${business.name}</h3>
+        <p class="text-gray-600 mb-3">${business.address1}${business.address2 ? `, ${business.address2}` : ''}</p>
+        ${business.google_maps ? `
+          <a 
+            href="${business.google_maps}" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="inline-flex items-center text-green-600 hover:text-green-700 font-medium focus:outline-none"
+          >
+            Directions
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        ` : ''}
+      </div>
+    </div>
+  `;
+
+  // Expose methods to parent component
+  useImperativeHandle(ref, () => ({
+    showPopup: (businessId) => {
+      const marker = markers.current.get(businessId);
+      const business = businesses.find(b => b.id === businessId);
+      if (marker && business && map.current && popup.current) {
+        // Close any existing popup
+        popup.current.remove();
+
+        // First fly to the marker
+        map.current.flyTo({
+          center: marker.getLngLat(),
+          zoom: 15,
+          duration: 1000
+        });
+
+        // After the movement ends, show the popup
+        const onMoveEnd = () => {
+          map.current.off('moveend', onMoveEnd);
+          popup.current
+            .setLngLat(marker.getLngLat())
+            .setHTML(createPopupContent(business))
+            .addTo(map.current);
+        };
+        map.current.on('moveend', onMoveEnd);
+      }
+    }
+  }));
 
   // Handle map resize on container size changes
   useEffect(() => {
@@ -34,7 +96,7 @@ const MapComponent = ({ businesses = [] }) => {
     if (map.current && !loading) {
       // Remove existing markers
       markers.current.forEach(marker => marker.remove());
-      markers.current = [];
+      markers.current.clear();
 
       // Add new markers
       businesses.forEach(business => {
@@ -45,57 +107,31 @@ const MapComponent = ({ businesses = [] }) => {
           el.style.width = '20px';
           el.style.height = '20px';
 
-          // Create popup with enhanced styling
-          const popup = new maplibregl.Popup({ 
-            offset: 25,
-            maxWidth: 'none',
-            className: 'custom-popup'
-          }).setHTML(`
-            <div class="w-[280px] bg-white shadow-lg">
-              ${business.picture ? `
-                <div class="w-full h-[180px] overflow-hidden">
-                  <img 
-                    src="${business.picture}" 
-                    alt="${business.name}"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-              ` : ''}
-              <div class="p-4">
-                <h3 class="text-xl font-bold text-gray-900 mb-2">${business.name}</h3>
-                <p class="text-gray-600 mb-3">${business.address1}${business.address2 ? `, ${business.address2}` : ''}</p>
-                ${business.google_maps ? `
-                  <a 
-                    href="${business.google_maps}" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    class="inline-flex items-center text-green-600 hover:text-green-700 font-medium focus:outline-none"
-                  >
-                    Directions
-                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </a>
-                ` : ''}
-              </div>
-            </div>
-          `);
-
           // Create marker without default pin
           const marker = new maplibregl.Marker({
             element: el,
             anchor: 'center'
           })
             .setLngLat([business.lon, business.lat])
-            .setPopup(popup)
             .addTo(map.current);
 
-          markers.current.push(marker);
+          // Store marker with business ID
+          markers.current.set(business.id, marker);
+
+          // Add click handler to show popup
+          marker.getElement().addEventListener('click', () => {
+            if (popup.current) {
+              popup.current
+                .setLngLat(marker.getLngLat())
+                .setHTML(createPopupContent(business))
+                .addTo(map.current);
+            }
+          });
         }
       });
 
       // Fit map to markers if there are any
-      if (markers.current.length > 0) {
+      if (markers.current.size > 0) {
         const bounds = new maplibregl.LngLatBounds();
         markers.current.forEach(marker => {
           bounds.extend(marker.getLngLat());
@@ -120,6 +156,15 @@ const MapComponent = ({ businesses = [] }) => {
           touchZoomRotate: true, // Enable touch zoom
           maxZoom: 18,
           minZoom: 8,
+        });
+
+        // Create single popup instance
+        popup.current = new maplibregl.Popup({
+          offset: 25,
+          maxWidth: 'none',
+          className: 'custom-popup',
+          closeOnClick: false,
+          anchor: 'bottom'
         });
 
         // Add custom popup styles
@@ -236,6 +281,6 @@ const MapComponent = ({ businesses = [] }) => {
       />
     </div>
   );
-};
+});
 
 export default MapComponent;
