@@ -5,6 +5,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 const MapComponent = ({ businesses = [] }) => {
   const mapContainer = useRef(null);
   const map = useRef(null);
+  const markers = useRef([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -28,6 +29,85 @@ const MapComponent = ({ businesses = [] }) => {
     };
   }, []);
 
+  // Update markers when businesses change
+  useEffect(() => {
+    if (map.current && !loading) {
+      // Remove existing markers
+      markers.current.forEach(marker => marker.remove());
+      markers.current = [];
+
+      // Add new markers
+      businesses.forEach(business => {
+        if (business.lat && business.lon) {
+          // Create marker element
+          const el = document.createElement('div');
+          el.className = 'bg-green-600 ring-2 ring-white rounded-full cursor-pointer shadow-md transform hover:scale-110 transition-transform';
+          el.style.width = '20px';
+          el.style.height = '20px';
+
+          // Create popup with enhanced styling
+          const popup = new maplibregl.Popup({ 
+            offset: 25,
+            maxWidth: 'none',
+            className: 'custom-popup'
+          }).setHTML(`
+            <div class="w-[280px] bg-white shadow-lg">
+              ${business.picture ? `
+                <div class="w-full h-[180px] overflow-hidden">
+                  <img 
+                    src="${business.picture}" 
+                    alt="${business.name}"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              ` : ''}
+              <div class="p-4">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">${business.name}</h3>
+                <p class="text-gray-600 mb-3">${business.address1}${business.address2 ? `, ${business.address2}` : ''}</p>
+                ${business.google_maps ? `
+                  <a 
+                    href="${business.google_maps}" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="inline-flex items-center text-green-600 hover:text-green-700 font-medium focus:outline-none"
+                  >
+                    Directions
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+          `);
+
+          // Create marker without default pin
+          const marker = new maplibregl.Marker({
+            element: el,
+            anchor: 'center'
+          })
+            .setLngLat([business.lon, business.lat])
+            .setPopup(popup)
+            .addTo(map.current);
+
+          markers.current.push(marker);
+        }
+      });
+
+      // Fit map to markers if there are any
+      if (markers.current.length > 0) {
+        const bounds = new maplibregl.LngLatBounds();
+        markers.current.forEach(marker => {
+          bounds.extend(marker.getLngLat());
+        });
+        map.current.fitBounds(bounds, {
+          padding: 50,
+          maxZoom: 15
+        });
+      }
+    }
+  }, [businesses, loading]);
+
   useEffect(() => {
     if (!map.current) {
       try {
@@ -42,25 +122,65 @@ const MapComponent = ({ businesses = [] }) => {
           minZoom: 8,
         });
 
+        // Add custom popup styles
+        const style = document.createElement('style');
+        style.textContent = `
+          .maplibregl-popup-content {
+            padding: 0 !important;
+            border-radius: 0.5rem !important;
+            overflow: hidden;
+            width: 280px !important;
+          }
+          .maplibregl-popup-close-button {
+            padding: 0.5rem !important;
+            color: white !important;
+            font-size: 1.25rem !important;
+            z-index: 1;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            right: 4px !important;
+            top: 4px !important;
+          }
+          .maplibregl-popup-close-button:hover {
+            background: none !important;
+            color: #e5e5e5 !important;
+          }
+          .maplibregl-popup-tip {
+            border-top-color: white !important;
+          }
+          /* Fix focus styles */
+          *:focus {
+            outline: none !important;
+          }
+          *:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+          }
+          .focus\\:ring-1:focus {
+            --tw-ring-offset-width: 1px !important;
+            box-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+          }
+        `;
+        document.head.appendChild(style);
+
         // Custom navigation controls
         const container = document.createElement('div');
         container.className = 'absolute right-2 top-2 flex flex-col gap-2';
         
         // Zoom in button
         const zoomInBtn = document.createElement('button');
-        zoomInBtn.className = 'bg-white rounded-lg w-8 h-8 shadow-md flex items-center justify-center hover:bg-gray-50 focus:outline-none';
+        zoomInBtn.className = 'bg-white rounded-lg w-8 h-8 shadow-md flex items-center justify-center hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-green-600 focus:ring-offset-1';
         zoomInBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>';
         zoomInBtn.onclick = () => map.current.zoomIn();
         
         // Zoom out button
         const zoomOutBtn = document.createElement('button');
-        zoomOutBtn.className = 'bg-white rounded-lg w-8 h-8 shadow-md flex items-center justify-center hover:bg-gray-50 focus:outline-none';
+        zoomOutBtn.className = 'bg-white rounded-lg w-8 h-8 shadow-md flex items-center justify-center hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-green-600 focus:ring-offset-1';
         zoomOutBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>';
         zoomOutBtn.onclick = () => map.current.zoomOut();
         
         // Reset north button
         const resetNorthBtn = document.createElement('button');
-        resetNorthBtn.className = 'bg-white rounded-lg w-8 h-8 shadow-md flex items-center justify-center hover:bg-gray-50 focus:outline-none';
+        resetNorthBtn.className = 'bg-white rounded-lg w-8 h-8 shadow-md flex items-center justify-center hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-green-600 focus:ring-offset-1';
         resetNorthBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19V5M5 12l7-7 7 7"></path></svg>';
         resetNorthBtn.onclick = () => {
           map.current.easeTo({

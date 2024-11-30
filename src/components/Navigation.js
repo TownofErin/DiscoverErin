@@ -20,9 +20,13 @@ const Navigation = ({ searchTerm, onSearchChange }) => {
     ? "bg-black bg-opacity-75"
     : "bg-white";
 
+  const containerClasses = isBusinessDirectory
+    ? "px-4"  // Full width for business directory
+    : "max-w-[1280px] mx-auto px-4";  // Contained width for other pages
+
   return (
     <nav className={navClasses}>
-      <div className="max-w-[1280px] mx-auto px-4">
+      <div className={containerClasses}>
         <div className="flex justify-between h-20">
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center">
@@ -125,28 +129,6 @@ const Navigation = ({ searchTerm, onSearchChange }) => {
             </button>
           </div>
         </div>
-
-        {/* Search Bar for Business Directory */}
-        {isBusinessDirectory && (
-          <div className="py-4 border-t border-gray-200">
-            <div className="max-w-3xl mx-auto">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search by Business, Category, Community"
-                  value={searchTerm}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Mobile menu */}
