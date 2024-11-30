@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import DefaultLayout from './layouts/DefaultLayout';
 
 const BusinessCard = ({ business }) => (
-  <div className="w-[350px] h-[350px] bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+  <div className="h-[400px] bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
     <div className="relative h-[200px]">
       <img
         src={business.image || 'https://via.placeholder.com/350x200'}
@@ -59,7 +59,7 @@ const CategoryPage = ({
     <DefaultLayout>
       {/* Hero Section */}
       <div className="bg-[#E5EDE5] w-screen relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw]">
-        <div className="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm mb-8">
             <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
@@ -73,10 +73,12 @@ const CategoryPage = ({
       </div>
 
       {/* Business Cards */}
-      <div className="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-fr">
-          {businesses.map(business => (
-            <BusinessCard key={business.id} business={business} />
+      <div className="max-w-[1280px] mx-auto py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+          {businesses.map((business, index) => (
+            <div className={`${index % 3 === 0 ? 'lg:pl-8' : ''} ${index % 3 === 2 ? 'lg:pr-8' : ''} ${index % 2 === 0 ? 'md:pl-6 sm:pl-4' : ''} ${index % 2 === 1 ? 'md:pr-6 sm:pr-4' : ''}`}>
+              <BusinessCard key={business.id} business={business} />
+            </div>
           ))}
         </div>
         {businesses.length === 0 && (

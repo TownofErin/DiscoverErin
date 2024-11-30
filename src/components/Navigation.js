@@ -9,8 +9,8 @@ const Navigation = ({ searchTerm, onSearchChange }) => {
 
   // Navigation styles based on page
   const navClasses = isHomePage 
-    ? "bg-transparent absolute top-0 left-0 right-0 z-50"
-    : "bg-white shadow-sm relative z-50";
+    ? "bg-transparent absolute top-0 left-0 right-0 z-50 w-full"
+    : "bg-white shadow-sm relative z-50 w-full";
 
   const linkClasses = isHomePage
     ? "text-white hover:text-gray-200"
@@ -22,7 +22,7 @@ const Navigation = ({ searchTerm, onSearchChange }) => {
 
   return (
     <nav className={navClasses}>
-      <div className="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1280px] mx-auto px-4">
         <div className="flex justify-between h-20">
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center">
@@ -32,40 +32,40 @@ const Navigation = ({ searchTerm, onSearchChange }) => {
                   : "https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/6667a0cfbad0589ef0837ebc_discover-erin-2024-new-clover-p-500.png"
                 }
                 alt="Discover Erin"
-                className="h-10 w-auto"
+                className="h-[42px] w-[81px] object-contain"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden sm:flex sm:items-center space-x-6">
+          <div className="hidden lg:flex lg:items-center lg:space-x-8">
             <Link 
               to="/places-to-stay" 
-              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors`}
+              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors whitespace-nowrap`}
             >
               Places to Stay
             </Link>
             <Link 
               to="/things-to-do" 
-              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors`}
+              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors whitespace-nowrap`}
             >
               Things to Do
             </Link>
             <Link 
               to="/eat-and-drink" 
-              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors`}
+              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors whitespace-nowrap`}
             >
               Eat & Drink
             </Link>
             <Link 
               to="/our-town" 
-              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors`}
+              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors whitespace-nowrap`}
             >
               Our Town
             </Link>
             <Link 
               to="/business-directory" 
-              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors`}
+              className={`px-3 py-2 text-base font-medium ${linkClasses} transition-colors whitespace-nowrap`}
             >
               Explore our Businesses
             </Link>
@@ -75,14 +75,14 @@ const Navigation = ({ searchTerm, onSearchChange }) => {
                 isHomePage 
                   ? "text-white bg-transparent border-2 border-erin-border hover:bg-erin-hover hover:border-erin-hover" 
                   : "text-white bg-green-600 hover:bg-green-700 border-2 border-green-600 hover:border-green-700"
-              } rounded-full font-medium transition-all duration-300 ml-2`}
+              } rounded-full font-medium transition-all duration-300 whitespace-nowrap`}
             >
               Plan Your Trip
             </Link>
           </div>
 
           {/* Mobile menu button */}
-          <div className="sm:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               type="button"
@@ -151,10 +151,10 @@ const Navigation = ({ searchTerm, onSearchChange }) => {
 
       {/* Mobile menu */}
       <div 
-        className={`sm:hidden ${isMenuOpen ? 'block' : 'hidden'}`} 
+        className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'} shadow-lg`} 
         id="mobile-menu"
       >
-        <div className={`px-2 pt-2 pb-3 space-y-1 ${mobileMenuClasses}`}>
+        <div className={`px-4 pt-2 pb-4 space-y-2 ${mobileMenuClasses}`}>
           <Link
             to="/places-to-stay"
             className={`block px-3 py-2 text-base font-medium ${linkClasses} transition-colors`}

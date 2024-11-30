@@ -3,8 +3,32 @@ import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import InstagramFeed from '../components/InstagramFeed';
 import EventCarousel from '../components/EventCarousel';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
+  const categories = [
+    {
+      title: "Agri-Tourism",
+      image: "https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/6667a0a15d7fb05ba4c667b2_farmBG.webp",
+      link: "/things-to-do?category=agri-tourism"
+    },
+    {
+      title: "Agri-Tourism",
+      image: "https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/6667a0a15d7fb05ba4c667b2_farmBG.webp",
+      link: "/things-to-do?category=agri-tourism"
+    },
+    {
+      title: "Arts & Culture",
+      image: "https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/6667a0a15d7fb05ba4c667b2_artsBG.webp",
+      link: "/things-to-do?category=arts-culture"
+    },
+    {
+      title: "Community",
+      image: "https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/6667a0a15d7fb05ba4c667b2_communityBG.webp",
+      link: "/things-to-do?category=community"
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -37,6 +61,41 @@ const Home = () => {
           </h2>
           <div className="px-4">
             <EventCarousel />
+          </div>
+        </div>
+      </section>
+
+      {/* Browse Things to Do Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">
+            Browse Things to Do
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((category, index) => (
+              <div 
+                key={index}
+                className="relative group overflow-hidden rounded-lg aspect-[4/3]"
+              >
+                <div className="absolute inset-0">
+                  <img
+                    src={category.image}
+                    alt={category.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black opacity-90"></div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <Link 
+                    to={category.link}
+                    className="text-xl font-bold text-white hover:text-gray-200 transition-colors hover:underline"
+                  >
+                    {category.title}
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

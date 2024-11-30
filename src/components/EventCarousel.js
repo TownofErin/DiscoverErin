@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 const EventCard = ({ date, month, title, subtitle, image }) => (
   <div className="relative rounded-lg overflow-hidden w-234 h-300 flex-shrink-0 event-card">
@@ -28,7 +29,12 @@ const EventCard = ({ date, month, title, subtitle, image }) => (
 
       {/* Title */}
       <div className="absolute bottom-0 left-0 right-0 p-4">
-        <h3 className="text-xl font-bold text-white">{title}</h3>
+        <Link 
+          to={`/events/${title.toLowerCase().replace(/\s+/g, '-')}`}
+          className="text-xl font-bold text-white hover:text-gray-200 transition-colors hover:underline"
+        >
+          {title}
+        </Link>
       </div>
     </div>
   </div>
@@ -52,7 +58,10 @@ const EventCarousel = () => {
   const scroll = (direction) => {
     const container = scrollContainerRef.current;
     if (container) {
-      const scrollAmount = 250;
+      const cardWidth = 234;
+      const gap = 16;
+      const scrollAmount = cardWidth + gap;
+
       container.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
@@ -150,8 +159,9 @@ const EventCarousel = () => {
       {/* Event Cards Container */}
       <div
         ref={scrollContainerRef}
-        className="flex overflow-x-auto gap-4 pb-6 scrollbar-hide snap-x snap-mandatory"
+        className="flex overflow-x-auto gap-4 pb-6 scrollbar-hide snap-x snap-mandatory scroll-smooth"
         onScroll={checkScroll}
+        style={{ scrollBehavior: 'smooth' }}
       >
         {events.map((event, index) => (
           <div key={index} className="snap-start">

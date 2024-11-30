@@ -5,7 +5,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 const MapComponent = ({ businesses = [] }) => {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const markers = useRef([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -34,9 +33,9 @@ const MapComponent = ({ businesses = [] }) => {
       try {
         map.current = new maplibregl.Map({
           container: mapContainer.current,
-          style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+          style: `https://api.maptiler.com/maps/streets/style.json?key=${process.env.REACT_APP_MAPTILER_KEY}`,
           center: [-80.067, 43.783], // Erin, Ontario
-          zoom: 13,
+          zoom: 10,
           dragRotate: false, // Disable rotation for better mobile UX
           touchZoomRotate: true, // Enable touch zoom
           maxZoom: 18,
@@ -90,65 +89,13 @@ const MapComponent = ({ businesses = [] }) => {
       }
     }
 
-    // Clear existing markers
-    markers.current.forEach(marker => marker.remove());
-    markers.current = [];
-
-    // Add markers for businesses with larger touch targets
-    businesses.forEach(business => {
-      const popup = new maplibregl.Popup({
-        offset: 25,
-        closeButton: true,
-        closeOnClick: true,
-        maxWidth: '300px',
-        className: 'rounded-lg shadow-lg'
-      }).setHTML(
-        `<div class="p-4">
-          <h3 class="font-semibold text-lg mb-2">${business.name}</h3>
-          <p class="text-gray-600 mb-2">${business.description}</p>
-          <p class="text-gray-500 text-sm">${business.address}</p>
-          ${business.category ? `<span class="inline-block px-3 py-1 mt-2 text-sm text-green-600 bg-green-50 rounded-full">${business.category}</span>` : ''}
-        </div>`
-      );
-
-      const el = document.createElement('div');
-      el.className = 'marker';
-      el.style.width = '24px';
-      el.style.height = '24px';
-      el.style.backgroundImage = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM4LjEzIDIgNSA1LjEzIDUgOWMwIDUuMjUgNyAxMyA3IDEzczctNy43NSA3LTEzYzAtMy44Ny0zLjEzLTctNy03eiIgZmlsbD0iIzIyQzU1RSIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iOSIgcj0iMi41IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==)';
-      el.style.backgroundSize = '100%';
-
-      const marker = new maplibregl.Marker({
-        element: el,
-        anchor: 'bottom'
-      })
-        .setLngLat(business.coordinates)
-        .setPopup(popup)
-        .addTo(map.current);
-
-      markers.current.push(marker);
-    });
-
-    // Fit map to markers if there are any
-    if (businesses.length > 0) {
-      const bounds = new maplibregl.LngLatBounds();
-      businesses.forEach(business => {
-        bounds.extend(business.coordinates);
-      });
-      map.current.fitBounds(bounds, {
-        padding: { top: 50, bottom: 50, left: 50, right: 50 },
-        maxZoom: 15,
-        duration: 1000
-      });
-    }
-
     return () => {
       if (map.current) {
-        markers.current.forEach(marker => marker.remove());
-        markers.current = [];
+        map.current.remove();
+        map.current = null;
       }
     };
-  }, [businesses]);
+  }, []);
 
   return (
     <div className="relative w-full h-full">

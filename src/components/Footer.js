@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-white py-12">
-      <div className="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-white py-12 w-full">
+      <div className="max-w-[1280px] mx-auto px-4">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
           {/* Logo and Description Column */}
           <div className="lg:max-w-xl mb-8 lg:mb-0">
@@ -12,7 +12,7 @@ const Footer = () => {
               <img
                 src="https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/6667a0cfbad0589ef0837ebc_discover-erin-2024-new-clover-p-500.png"
                 alt="Discover Erin"
-                className="h-12 w-auto"
+                className="h-8 w-auto"
               />
             </Link>
             <p className="text-gray-600 mb-4">

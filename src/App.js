@@ -5,6 +5,7 @@ import PlacesToStay from './pages/PlacesToStay';
 import ThingsToDo from './pages/ThingsToDo';
 import EatAndDrink from './pages/EatAndDrink';
 import OurTown from './pages/OurTown';
+import PlanYourTrip from './pages/PlanYourTrip';
 import React from 'react';
 import './App.css';
 
@@ -19,7 +20,7 @@ function App() {
           <Route path="/eat-and-drink" element={<EatAndDrink />} />
           <Route path="/our-town" element={<OurTown />} />
           <Route path="/business-directory" element={<BusinessDirectory />} />
-          <Route path="/plan-your-trip" element={<div>Plan Your Trip</div>} />
+          <Route path="/plan-your-trip" element={<PlanYourTrip />} />
         </Routes>
       </div>
     </Router>

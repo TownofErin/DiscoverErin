@@ -4,11 +4,10 @@ import Footer from '../Footer';
 
 const HomeLayout = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* Pass isHomePage prop to Navigation for different styling */}
-      <Navigation isHomePage={true} />
+    <div className="min-h-screen flex flex-col">
+      <Navigation />
       <main className="flex-grow">
-        <div className="max-w-[2000px] mx-auto">
+        <div className="max-w-[1280px] mx-auto px-4">
           {children}
         </div>
       </main>
