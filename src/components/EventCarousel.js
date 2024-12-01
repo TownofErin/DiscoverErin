@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const EventCard = ({ date, month, title, subtitle, image }) => (
-  <div className="relative rounded-lg overflow-hidden w-234 h-300 flex-shrink-0 event-card">
+  <div className="relative rounded-lg overflow-hidden w-[180px] md:w-234 h-[240px] md:h-300 flex-shrink-0 event-card">
     {/* Background Image */}
     <div className="absolute inset-0">
       <img 
@@ -17,21 +17,21 @@ const EventCard = ({ date, month, title, subtitle, image }) => (
     {/* Content Layer */}
     <div className="relative h-full">
       {/* Date Circle */}
-      <div className="absolute top-4 right-4 bg-white rounded-full w-20 h-20 flex flex-col items-center justify-center z-10">
-        <span className="text-3xl font-bold leading-none">{date}</span>
-        <span className="text-gray-500 uppercase tracking-wider text-xs mt-0.5">{month}</span>
+      <div className="absolute top-2 md:top-4 right-2 md:right-4 bg-white rounded-full w-16 md:w-20 h-16 md:h-20 flex flex-col items-center justify-center z-10">
+        <span className="text-2xl md:text-3xl font-bold leading-none">{date}</span>
+        <span className="text-gray-500 uppercase tracking-wider text-[10px] md:text-xs mt-0.5">{month}</span>
       </div>
 
       {/* Subtitle */}
-      <div className="absolute top-6 left-4 right-28 text-white text-lg font-light leading-snug">
+      <div className="absolute top-4 md:top-6 left-3 md:left-4 right-20 md:right-28 text-white text-sm md:text-lg font-light leading-snug">
         {subtitle}
       </div>
 
       {/* Title */}
-      <div className="absolute bottom-0 left-0 right-0 p-4">
+      <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
         <Link 
           to={`/events/${title.toLowerCase().replace(/\s+/g, '-')}`}
-          className="text-xl font-bold text-white hover:text-gray-200 transition-colors hover:underline"
+          className="text-base md:text-xl font-bold text-white hover:text-gray-200 transition-colors hover:underline"
         >
           {title}
         </Link>
@@ -58,8 +58,8 @@ const EventCarousel = () => {
   const scroll = (direction) => {
     const container = scrollContainerRef.current;
     if (container) {
-      const cardWidth = 234;
-      const gap = 16;
+      const cardWidth = window.innerWidth < 768 ? 180 : 234;
+      const gap = window.innerWidth < 768 ? 12 : 16;
       const scrollAmount = cardWidth + gap;
 
       container.scrollBy({
@@ -70,7 +70,6 @@ const EventCarousel = () => {
   };
 
   const events = [
-    // Original events
     {
       date: '29',
       month: 'Sept',
@@ -99,7 +98,6 @@ const EventCarousel = () => {
       subtitle: 'Celebrate the autumn harvest',
       image: 'https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/66e2f2f8529e6630b1556fc6_image005.png'
     },
-    // Duplicated events with different dates
     {
       date: '05',
       month: 'Nov',
@@ -136,10 +134,10 @@ const EventCarousel = () => {
       {canScrollLeft && (
         <button
           onClick={() => scroll('left')}
-          className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
+          className="absolute -left-2 md:-left-4 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1.5 md:p-2 shadow-lg hover:bg-gray-100 transition-colors"
           aria-label="Scroll left"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
@@ -147,10 +145,10 @@ const EventCarousel = () => {
       {canScrollRight && (
         <button
           onClick={() => scroll('right')}
-          className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
+          className="absolute -right-2 md:-right-4 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1.5 md:p-2 shadow-lg hover:bg-gray-100 transition-colors"
           aria-label="Scroll right"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
@@ -159,7 +157,7 @@ const EventCarousel = () => {
       {/* Event Cards Container */}
       <div
         ref={scrollContainerRef}
-        className="flex overflow-x-auto gap-4 pb-6 scrollbar-hide snap-x snap-mandatory scroll-smooth"
+        className="flex overflow-x-auto gap-3 md:gap-4 pb-4 md:pb-6 scrollbar-hide snap-x snap-mandatory scroll-smooth"
         onScroll={checkScroll}
         style={{ scrollBehavior: 'smooth' }}
       >

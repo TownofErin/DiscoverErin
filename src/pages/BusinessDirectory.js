@@ -8,25 +8,33 @@ const BusinessCard = ({ place, onClick }) => {
 
   return (
     <div 
-      className={`w-full bg-white rounded-lg overflow-hidden shadow-sm ${
+      className={`w-full bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 ${
         hasLocation ? 'cursor-pointer hover:shadow-md' : ''
       } transition-shadow relative`}
       onClick={hasLocation ? onClick : undefined}
     >
       {/* Category Icon */}
       <div className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md z-10">
-        <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2M6 7l-3-1m3 1l3 9a5.002 5.002 0 006.001 0M18 7l3 9M18 7l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-        </svg>
+        {place.categorySymbol ? (
+          <img 
+            src={place.categorySymbol} 
+            alt={place.categoryName} 
+            className="w-6 h-6"
+          />
+        ) : (
+          <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2M6 7l-3-1m3 1l3 9a5.002 5.002 0 006.001 0M18 7l3 9M18 7l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+          </svg>
+        )}
       </div>
 
-      {/* Image */}
+      {/* Image Container */}
       {place.picture && (
-        <div className="rounded-lg overflow-hidden">
+        <div className="bg-gray-50 h-48">
           <img
             src={place.picture}
             alt={place.name}
-            className="w-full aspect-[3/2] object-cover"
+            className="w-full h-full object-cover"
           />
         </div>
       )}
@@ -146,7 +154,6 @@ const BusinessDirectory = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [communities, setCommunities] = useState([]);
   const [places, setPlaces] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [availableCategories, setAvailableCategories] = useState(new Set());
   const [availableSubCategories, setAvailableSubCategories] = useState(new Set());
   const [availableCommunities, setAvailableCommunities] = useState(new Set());
@@ -163,7 +170,7 @@ const BusinessDirectory = () => {
         .from('places')
         .select(`
           *,
-          categories:category (id, name),
+          categories:category (id, name, symbol),
           sub_categories:sub_category (id, name),
           communities:locations (id, name)
         `);
@@ -186,6 +193,7 @@ const BusinessDirectory = () => {
       const transformedPlaces = data.map(place => ({
         ...place,
         categoryName: place.categories?.name,
+        categorySymbol: place.categories?.symbol,
         subCategoryName: place.sub_categories?.name,
         locationName: place.communities?.name
       }));
@@ -253,8 +261,6 @@ const BusinessDirectory = () => {
         await fetchPlaces();
       } catch (error) {
         console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -272,8 +278,6 @@ const BusinessDirectory = () => {
     setSelectedCommunity('all');
     setSearchTerm('');
   };
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">

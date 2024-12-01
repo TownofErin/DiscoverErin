@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabaseClient';
 
 const ThingsToDo = () => {
   const [places, setPlaces] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -15,7 +14,7 @@ const ThingsToDo = () => {
           .from('places')
           .select(`
             *,
-            categories:category (name),
+            categories:category (name, symbol),
             sub_categories:sub_category (name),
             communities:locations (name)
           `)
@@ -27,6 +26,7 @@ const ThingsToDo = () => {
         const transformedPlaces = data.map(place => ({
           ...place,
           categoryName: place.categories?.name,
+          categorySymbol: place.categories?.symbol,
           subCategoryName: place.sub_categories?.name,
           locations: place.communities?.name
         }));
@@ -35,15 +35,12 @@ const ThingsToDo = () => {
       } catch (error) {
         console.error('Error fetching places:', error);
         setError(error.message);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchPlaces();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
