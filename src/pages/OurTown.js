@@ -31,22 +31,22 @@ const OurTown = () => {
     <DefaultLayout>
       {/* Hero Section */}
       <div className="bg-[#E5EDE5] w-screen relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw]">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start lg:items-center">
             <div>
-              <h2 className="text-lg text-gray-600 uppercase tracking-wider mb-6">
+              <h2 className="text-base lg:text-lg text-gray-600 uppercase tracking-wider mb-4 lg:mb-6">
                 ABOUT ERIN
               </h2>
-              <h1 className="text-5xl font-bold text-gray-900 mb-8">
+              <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6 lg:mb-8">
                 About Our Town
               </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
+              <p className="text-lg lg:text-xl text-gray-600 leading-relaxed">
                 Erin boasts several must-visit attractions, including the scenic Erin Heritage Walking Trail, 
                 the charming village of Hillsburgh, and the beautiful Elora Cataract Trailway. Be sure to 
                 explore the Erin Fall Fair, one of Ontario's oldest agricultural fairs.
               </p>
             </div>
-            <div className="rounded-xl overflow-hidden">
+            <div className="rounded-xl overflow-hidden h-[300px] lg:h-auto">
               <img
                 src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/about-us.jpg"
                 alt="Erin Fall Fair Ferris wheel lit up at night"
@@ -58,10 +58,10 @@ const OurTown = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         {/* History Section */}
-        <div className="mb-24">
-          <h2 className="text-lg text-gray-600 uppercase tracking-wider mb-16 text-center">HISTORY</h2>
+        <div className="mb-16 lg:mb-24">
+          <h2 className="text-lg text-gray-600 uppercase tracking-wider mb-12 lg:mb-16 text-center">HISTORY</h2>
           <HistoryCard title="History of the Town">
             <div className="space-y-8">
               <p>
@@ -75,24 +75,28 @@ const OurTown = () => {
                 Hill took possession of Lot 25 and built the first hotel on the site of today's Foodland. The name of the settlement 
                 was changed to Hillsburgh.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-                <img
-                  src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/history1.jpg"
-                  alt="Historic Erin"
-                  className="w-full h-80 object-cover rounded-xl"
-                />
-                <img
-                  src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/history2.jpg"
-                  alt="Historic Hillsburgh"
-                  className="w-full h-80 object-cover rounded-xl"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mt-12">
+                <div className="h-[300px] lg:h-80">
+                  <img
+                    src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/history1.jpg"
+                    alt="Historic Erin"
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                </div>
+                <div className="h-[300px] lg:h-80">
+                  <img
+                    src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/history2.jpg"
+                    alt="Historic Hillsburgh"
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                </div>
               </div>
             </div>
           </HistoryCard>
         </div>
 
         {/* Communities Section */}
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12 mb-24">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12 mb-16 lg:mb-24">
           <CommunityCard title="Crewsons Corners">
             <p>
               Crewsons Corners is comprised of the corners of four townships in two counties, the south corner 
@@ -161,7 +165,7 @@ const OurTown = () => {
 
         {/* FAQ Section */}
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-lg text-gray-600 uppercase tracking-wider mb-16 text-center">FREQUENTLY ASKED QUESTIONS</h2>
+          <h2 className="text-lg text-gray-600 uppercase tracking-wider mb-12 lg:mb-16 text-center">FREQUENTLY ASKED QUESTIONS</h2>
           <div className="space-y-12">
             <FAQItem 
               question="What are the main attractions in Erin?"

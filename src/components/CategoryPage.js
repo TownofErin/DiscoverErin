@@ -101,24 +101,24 @@ const CategoryPage = ({
     <DefaultLayout>
       {/* Hero Section */}
       <div className="bg-[#E5EDE5] w-screen relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw]">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
           {/* Breadcrumb */}
-          <div className="flex items-center space-x-2 text-sm mb-8">
+          <div className="flex items-center space-x-2 text-sm mb-6 lg:mb-8">
             <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
             <span className="text-gray-400">&bull;</span>
             <span className="text-gray-900">{title}</span>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start lg:items-center">
             <div>
-              <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">{title}</h1>
-              <p className="text-lg text-gray-700">{description}</p>
+              <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6">{title}</h1>
+              <p className="text-base lg:text-lg text-gray-700">{description}</p>
             </div>
-            <div className="hidden lg:block">
+            <div className="h-[250px] lg:h-[400px] rounded-lg overflow-hidden">
               <img 
                 src={headerImage} 
                 alt={title}
-                className="w-full h-[400px] object-cover rounded-lg shadow-lg"
+                className="w-full h-full object-cover shadow-lg"
               />
             </div>
           </div>
@@ -127,7 +127,7 @@ const CategoryPage = ({
 
       {/* Place Cards */}
       <div className="max-w-[1280px] mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {Array.isArray(places) && places.map((place) => (
             <BusinessCard key={place.id} place={place} />
           ))}
