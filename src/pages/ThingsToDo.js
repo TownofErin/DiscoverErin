@@ -48,7 +48,7 @@ const ThingsToDo = () => {
       title="Discover exciting activities and attractions"
       description="From scenic trails and outdoor adventures to unique local attractions, Erin offers a diverse range of activities for visitors of all ages. Explore our natural beauty, engage with local culture, and create unforgettable memories in our vibrant community."
       places={places}
-      headerImage={places[0]?.picture || 'https://via.placeholder.com/600x400'}
+      headerImage="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/things-to-do.webp"
     />
   );
 };

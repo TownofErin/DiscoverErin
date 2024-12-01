@@ -48,7 +48,7 @@ const PlacesToStay = () => {
       title="Experience the warmth of Erin hospitality"
       description="Nestled in the picturesque landscapes of Erin and Hillsburgh, our cozy retreats offer a tranquil escape from the hustle and bustle of city life. Let our friendly hosts welcome you with open arms as you immerse yourself in the beauty of our surroundings. Begin planning your dream getaway today and discover the true meaning of relaxation and comfort."
       places={places}
-      headerImage={places[0]?.picture || 'https://via.placeholder.com/600x400'}
+      headerImage="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/places-stay.jpg"
     />
   );
 };

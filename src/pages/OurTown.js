@@ -48,7 +48,7 @@ const OurTown = () => {
             </div>
             <div className="rounded-xl overflow-hidden">
               <img
-                src="https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/6668b138dca18e09ad0a17e0_Events.jpg"
+                src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/about-us.jpg"
                 alt="Erin Fall Fair Ferris wheel lit up at night"
                 className="w-full h-full object-cover"
               />
@@ -77,12 +77,12 @@ const OurTown = () => {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
                 <img
-                  src="https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/6668b138dca18e09ad0a17e0_Events.jpg"
+                  src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/history1.jpg"
                   alt="Historic Erin"
                   className="w-full h-80 object-cover rounded-xl"
                 />
                 <img
-                  src="https://cdn.prod.website-files.com/648fa3e80460401ca2b9f257/6668b138dca18e09ad0a17e0_Events.jpg"
+                  src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/history2.jpg"
                   alt="Historic Hillsburgh"
                   className="w-full h-80 object-cover rounded-xl"
                 />

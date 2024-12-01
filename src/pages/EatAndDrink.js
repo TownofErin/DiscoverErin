@@ -48,7 +48,7 @@ const EatAndDrink = () => {
       title="Savor the flavors of Erin"
       description="Experience the diverse culinary delights that Erin has to offer. From cozy cafes and family restaurants to local breweries and specialty food shops, discover the unique tastes and warm hospitality that make our food scene special."
       places={places}
-      headerImage={places[0]?.picture || 'https://via.placeholder.com/600x400'}
+      headerImage="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/headers/food-drink.jpg"
     />
   );
 };

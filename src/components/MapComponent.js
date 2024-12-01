@@ -167,6 +167,52 @@ const MapComponent = forwardRef(({ businesses = [] }, ref) => {
           anchor: 'bottom'
         });
 
+        // Add Town of Erin boundary when map loads
+        map.current.on('load', () => {
+          // Add the boundary source
+          map.current.addSource('erin-boundary', {
+            type: 'geojson',
+            data: {
+              type: 'Feature',
+              geometry: {
+                type: 'Polygon',
+                coordinates: [[
+                  [-80.1593, 43.8289], // Northwest corner
+                  [-80.1593, 43.7289], // Southwest corner
+                  [-79.9793, 43.7289], // Southeast corner
+                  [-79.9793, 43.8289], // Northeast corner
+                  [-80.1593, 43.8289]  // Back to start to close the polygon
+                ]]
+              }
+            }
+          });
+
+          // Add the boundary line layer
+          map.current.addLayer({
+            id: 'erin-boundary-line',
+            type: 'line',
+            source: 'erin-boundary',
+            paint: {
+              'line-color': '#34D399', // Green color
+              'line-width': 3,
+              'line-opacity': 0.8
+            }
+          });
+
+          // Add the boundary fill layer
+          map.current.addLayer({
+            id: 'erin-boundary-fill',
+            type: 'fill',
+            source: 'erin-boundary',
+            paint: {
+              'fill-color': '#34D399', // Green color
+              'fill-opacity': 0.1
+            }
+          });
+
+          setLoading(false);
+        });
+
         // Add custom popup styles
         const style = document.createElement('style');
         style.textContent = `
@@ -239,10 +285,6 @@ const MapComponent = forwardRef(({ businesses = [] }, ref) => {
         container.appendChild(resetNorthBtn);
 
         map.current.getContainer().appendChild(container);
-
-        map.current.on('load', () => {
-          setLoading(false);
-        });
 
         map.current.on('error', (e) => {
           setError(e.error.message);
