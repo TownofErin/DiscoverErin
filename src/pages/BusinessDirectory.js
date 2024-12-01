@@ -124,12 +124,12 @@ const BusinessCard = ({ place, onClick }) => {
 };
 
 const SelectWithChevron = ({ value, onChange, className = '', disabled = false, children }) => (
-  <div className="relative">
+  <div className="relative w-full">
     <select
       value={value}
       onChange={onChange}
       disabled={disabled}
-      className={`${className} pr-10 border-gray-300 ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''} focus:border-gray-300`}
+      className={`${className} w-full pr-10 border-gray-300 ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''} focus:border-gray-300`}
     >
       {children}
     </select>
@@ -149,6 +149,7 @@ const BusinessDirectory = () => {
   const [selectedCommunity, setSelectedCommunity] = useState('all');
   const [sortBy, setSortBy] = useState('name');
   const [showMap, setShowMap] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -164,8 +165,57 @@ const BusinessDirectory = () => {
     }
   }, []);
 
+  const handleCategoryChange = (categoryId) => {
+    // Only reset subcategory if it doesn't belong to the new category
+    if (categoryId === 'all') {
+      setSelectedSubCategory('all');
+    } else {
+      const currentSubCategory = subCategories.find(sub => sub.id === Number(selectedSubCategory));
+      if (currentSubCategory && currentSubCategory.category !== Number(categoryId)) {
+        setSelectedSubCategory('all');
+      }
+    }
+    setSelectedCategory(categoryId);
+  };
+
   const fetchPlaces = useCallback(async () => {
     try {
+      // First, get all available categories, subcategories, and communities from all places
+      const { data: allPlaces } = await supabase
+        .from('places')
+        .select(`
+          category,
+          sub_category,
+          locations,
+          categories:category (id, name),
+          sub_categories:sub_category (id, name),
+          communities:locations (id, name)
+        `);
+
+      // Set available categories
+      const availableCats = new Set(allPlaces
+        .filter(item => item.category)
+        .map(item => item.category)
+      );
+      setAvailableCategories(availableCats);
+
+      // Set available subcategories for current category
+      if (selectedCategory !== 'all') {
+        const availableSubCats = new Set(allPlaces
+          .filter(item => item.category === Number(selectedCategory) && item.sub_category)
+          .map(item => item.sub_category)
+        );
+        setAvailableSubCategories(availableSubCats);
+      }
+
+      // Set available communities
+      const availableComms = new Set(allPlaces
+        .filter(item => item.locations)
+        .map(item => item.locations)
+      );
+      setAvailableCommunities(availableComms);
+
+      // Then get the filtered places
       let query = supabase
         .from('places')
         .select(`
@@ -213,18 +263,21 @@ const BusinessDirectory = () => {
       filteredPlaces.sort((a, b) => {
         if (sortBy === 'name') {
           return a.name.localeCompare(b.name);
+        } else if (sortBy === 'category') {
+          // First sort by category name
+          const categoryCompare = (a.categoryName || '').localeCompare(b.categoryName || '');
+          if (categoryCompare !== 0) return categoryCompare;
+          
+          // If categories are the same, sort by subcategory
+          const subCategoryCompare = (a.subCategoryName || '').localeCompare(b.subCategoryName || '');
+          if (subCategoryCompare !== 0) return subCategoryCompare;
+          
+          // If subcategories are the same, sort by business name
+          return a.name.localeCompare(b.name);
         }
         return 0;
       });
 
-      // Extract available categories, subcategories, and communities
-      const categoryIds = new Set(filteredPlaces.map(place => place.category));
-      const subCategoryIds = new Set(filteredPlaces.map(place => place.sub_category));
-      const communityIds = new Set(filteredPlaces.map(place => place.locations));
-
-      setAvailableCategories(categoryIds);
-      setAvailableSubCategories(subCategoryIds);
-      setAvailableCommunities(communityIds);
       setPlaces(filteredPlaces);
     } catch (error) {
       console.error('Error fetching places:', error);
@@ -279,87 +332,113 @@ const BusinessDirectory = () => {
     setSearchTerm('');
   };
 
+  // Get filtered subcategories for the current category
+  const getFilteredSubCategories = useCallback(() => {
+    if (selectedCategory === 'all') return [];
+    return subCategories.filter(sub => 
+      sub.category === Number(selectedCategory) &&
+      availableSubCategories.has(sub.id)
+    );
+  }, [selectedCategory, subCategories, availableSubCategories]);
+
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Navigation */}
       <Navigation searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 
       {/* Filters */}
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-white shadow-sm">
-        {/* Mobile Filters - Vertical Stack */}
-        <div className="lg:hidden space-y-3">
-          {/* Search */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search by Business, Category, Community"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] focus:border-gray-300"
-            />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+      <div className="w-full px-3 sm:px-6 lg:px-8 py-2 bg-white shadow-sm">
+        {/* Mobile Filters */}
+        <div className="lg:hidden">
+          {/* Search Bar Row */}
+          <div className="flex items-center gap-2 mb-2">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Search businesses..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-1.5 pl-8 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] focus:border-gray-300"
+              />
+              <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
             </div>
+            <button
+              onClick={resetFilters}
+              className="px-3 py-1.5 text-sm text-green-600 hover:text-green-700 font-medium bg-green-50 hover:bg-green-100 rounded-lg transition-colors whitespace-nowrap"
+            >
+              Reset
+            </button>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <span>Filters</span>
+              <svg
+                className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
           </div>
 
-          {/* Category */}
-          <SelectWithChevron
-            value={selectedCategory}
-            onChange={(e) => {
-              setSelectedCategory(e.target.value);
-              setSelectedSubCategory('all');
-            }}
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
-          >
-            <option value="all">All Categories</option>
-            {categories
-              .filter(category => availableCategories.has(category.id))
-              .map(category => (
-                <option key={category.id} value={category.id}>{category.name}</option>
-              ))}
-          </SelectWithChevron>
+          {/* Collapsible Filters */}
+          {showFilters && (
+            <div className="space-y-2">
+              {/* Category and Subcategory Row */}
+              <div className="flex gap-2">
+                <div className="w-1/2">
+                  <SelectWithChevron
+                    value={selectedCategory}
+                    onChange={(e) => handleCategoryChange(e.target.value)}
+                    className="px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
+                  >
+                    <option value="all">All Categories</option>
+                    {categories
+                      .filter(category => availableCategories.has(category.id))
+                      .map(category => (
+                        <option key={category.id} value={category.id}>{category.name}</option>
+                      ))}
+                  </SelectWithChevron>
+                </div>
+                <div className="w-1/2">
+                  <SelectWithChevron
+                    value={selectedSubCategory}
+                    onChange={(e) => setSelectedSubCategory(e.target.value)}
+                    disabled={selectedCategory === 'all'}
+                    className="px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
+                  >
+                    <option value="all">{selectedCategory === 'all' ? 'Choose a Category first' : 'All Sub-Categories'}</option>
+                    {getFilteredSubCategories().map(subCategory => (
+                      <option key={subCategory.id} value={subCategory.id}>{subCategory.name}</option>
+                    ))}
+                  </SelectWithChevron>
+                </div>
+              </div>
 
-          {/* Sub-Category */}
-          <SelectWithChevron
-            value={selectedSubCategory}
-            onChange={(e) => setSelectedSubCategory(e.target.value)}
-            disabled={selectedCategory === 'all'}
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
-          >
-            <option value="all">{selectedCategory === 'all' ? 'Choose a Category first' : 'All Sub-Categories'}</option>
-            {subCategories
-              .filter(sub => 
-                (selectedCategory === 'all' || sub.category === Number(selectedCategory)) &&
-                availableSubCategories.has(sub.id)
-              )
-              .map(subCategory => (
-                <option key={subCategory.id} value={subCategory.id}>{subCategory.name}</option>
-              ))}
-          </SelectWithChevron>
-
-          {/* Community */}
-          <SelectWithChevron
-            value={selectedCommunity}
-            onChange={(e) => setSelectedCommunity(e.target.value)}
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
-          >
-            <option value="all">All Communities</option>
-            {communities
-              .filter(community => availableCommunities.has(community.id))
-              .map(community => (
-                <option key={community.id} value={community.id}>{community.name}</option>
-              ))}
-          </SelectWithChevron>
-
-          {/* Reset Button */}
-          <button
-            onClick={resetFilters}
-            className="w-full px-4 py-2 text-green-600 hover:text-green-700 font-medium bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
-          >
-            Reset Filters
-          </button>
+              {/* Community Row */}
+              <div className="w-full">
+                <SelectWithChevron
+                  value={selectedCommunity}
+                  onChange={(e) => setSelectedCommunity(e.target.value)}
+                  className="px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
+                >
+                  <option value="all">All Communities</option>
+                  {communities
+                    .filter(community => availableCommunities.has(community.id))
+                    .map(community => (
+                      <option key={community.id} value={community.id}>{community.name}</option>
+                    ))}
+                </SelectWithChevron>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Desktop Filters - Horizontal Layout */}
@@ -381,11 +460,8 @@ const BusinessDirectory = () => {
 
           <SelectWithChevron
             value={selectedCategory}
-            onChange={(e) => {
-              setSelectedCategory(e.target.value);
-              setSelectedSubCategory('all');
-            }}
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
           >
             <option value="all">All Categories</option>
             {categories
@@ -399,23 +475,18 @@ const BusinessDirectory = () => {
             value={selectedSubCategory}
             onChange={(e) => setSelectedSubCategory(e.target.value)}
             disabled={selectedCategory === 'all'}
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
           >
             <option value="all">{selectedCategory === 'all' ? 'Choose a Category first' : 'All Sub-Categories'}</option>
-            {subCategories
-              .filter(sub => 
-                (selectedCategory === 'all' || sub.category === Number(selectedCategory)) &&
-                availableSubCategories.has(sub.id)
-              )
-              .map(subCategory => (
-                <option key={subCategory.id} value={subCategory.id}>{subCategory.name}</option>
-              ))}
+            {getFilteredSubCategories().map(subCategory => (
+              <option key={subCategory.id} value={subCategory.id}>{subCategory.name}</option>
+            ))}
           </SelectWithChevron>
 
           <SelectWithChevron
             value={selectedCommunity}
             onChange={(e) => setSelectedCommunity(e.target.value)}
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer"
           >
             <option value="all">All Communities</option>
             {communities
@@ -444,14 +515,16 @@ const BusinessDirectory = () => {
               <span className="text-gray-600">
                 Showing {places.length} {places.length === 1 ? 'business' : 'businesses'}
               </span>
-              <SelectWithChevron
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer text-sm"
-              >
-                <option value="name">Sort by Name</option>
-                <option value="category">Sort by Category</option>
-              </SelectWithChevron>
+              <div className="w-32">
+                <SelectWithChevron
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#22742F] appearance-none cursor-pointer text-sm"
+                >
+                  <option value="name">Sort by Name</option>
+                  <option value="category">Sort by Category</option>
+                </SelectWithChevron>
+              </div>
             </div>
 
             {/* Cards Grid - Responsive layout */}
