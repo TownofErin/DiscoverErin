@@ -222,21 +222,9 @@ const MapComponent = forwardRef(({ businesses = [] }, ref) => {
         zoomOutBtn.className = 'bg-white rounded-lg w-8 h-8 shadow-md flex items-center justify-center hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-green-600 focus:ring-offset-1';
         zoomOutBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>';
         zoomOutBtn.onclick = () => map.current.zoomOut();
-        
-        // Reset north button
-        const resetNorthBtn = document.createElement('button');
-        resetNorthBtn.className = 'bg-white rounded-lg w-8 h-8 shadow-md flex items-center justify-center hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-green-600 focus:ring-offset-1';
-        resetNorthBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19V5M5 12l7-7 7 7"></path></svg>';
-        resetNorthBtn.onclick = () => {
-          map.current.easeTo({
-            bearing: 0,
-            pitch: 0
-          });
-        };
 
         container.appendChild(zoomInBtn);
         container.appendChild(zoomOutBtn);
-        container.appendChild(resetNorthBtn);
 
         map.current.getContainer().appendChild(container);
 

@@ -22,7 +22,7 @@ const Footer = () => {
 
           {/* Links Section */}
           <div className="mt-12 xl:mt-0 xl:col-span-2">
-            <div className="grid grid-cols-2 gap-8 justify-items-end">
+            <div className="grid grid-cols-2 gap-8 xl:justify-items-end">
               <div>
                 <h3 className="text-base font-semibold text-gray-900">Explore</h3>
                 <ul className="mt-4 space-y-4">
