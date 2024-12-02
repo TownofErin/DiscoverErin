@@ -30,26 +30,34 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navigation />
-      
-      {/* Hero Section - reduced height on mobile */}
-      <div className="relative h-[400px] md:h-711 flex items-center justify-center">
+    <div className="flex flex-col">
+      {/* Hero Section with Navigation */}
+      <div className="relative">
+        {/* Hero Background */}
         <div className="absolute inset-0">
           <img
             src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/home/farmBG.webp"
             alt="Erin countryside"
-            className="w-full h-full object-cover object-top"
+            className="w-full h-[400px] md:h-711 object-cover object-top"
           />
           <div className="absolute inset-0 bg-black opacity-40"></div>
         </div>
-        <div className="relative text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-7xl font-bold mb-4 md:mb-6 text-white leading-tight">
-            Welcome to Erin
-          </h1>
-          <p className="text-lg md:text-2xl text-white font-light max-w-2xl mx-auto leading-relaxed">
-            A vibrant, friendly rural town in Ontario with charming warmth, agri-tourism adventures, an active equestrian community, and enriching experiences.
-          </p>
+
+        {/* Header Content */}
+        <div className="relative">
+          <Navigation />
+          
+          {/* Hero Content */}
+          <div className="h-[400px] md:h-711 flex items-center justify-center">
+            <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h1 className="text-4xl md:text-7xl font-bold mb-4 md:mb-6 text-white leading-tight">
+                Welcome to Erin
+              </h1>
+              <p className="text-lg md:text-2xl text-white font-light max-w-2xl mx-auto leading-relaxed">
+                A vibrant, friendly rural town in Ontario with charming warmth, agri-tourism adventures, an active equestrian community, and enriching experiences.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 

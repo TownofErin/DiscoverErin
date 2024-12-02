@@ -5,11 +5,10 @@ const Navigation = ({ searchTerm, onSearchChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
-  const isBusinessDirectory = location.pathname === '/business-directory';
 
   // Navigation styles based on page
   const navClasses = isHomePage 
-    ? "bg-transparent absolute top-0 left-0 right-0 z-50 w-full"
+    ? "absolute top-0 left-0 right-0 z-40 w-full"  // Changed z-index to be below announcement
     : "bg-white shadow-sm relative z-50 w-full";
 
   const linkClasses = isHomePage
@@ -20,7 +19,7 @@ const Navigation = ({ searchTerm, onSearchChange }) => {
     ? "bg-black bg-opacity-75"
     : "bg-white";
 
-  const containerClasses = isBusinessDirectory
+  const containerClasses = location.pathname === '/business-directory'
     ? "px-3 sm:px-4"  // Full width for business directory
     : "max-w-[1280px] mx-auto px-3 sm:px-4";  // Contained width for other pages
 
