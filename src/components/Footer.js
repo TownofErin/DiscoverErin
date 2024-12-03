@@ -107,9 +107,14 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="mt-12 border-t border-gray-200 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-base text-gray-500">
-              &copy; {new Date().getFullYear()} Discover Erin. All rights reserved.
-            </p>
+            <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+              <p className="text-base text-gray-500">
+                &copy; {new Date().getFullYear()} Discover Erin. All rights reserved.
+              </p>
+              <p className="text-base text-gray-500">
+                Made with ❤️ in Erin, Ontario
+              </p>
+            </div>
             <div className="flex items-center space-x-2">
               <span className="text-base text-gray-500">Website by</span>
               <a 

@@ -25,6 +25,28 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Discover Erin - Your Guide to Events, Agri-Tourism, Things to Do & Life in Erin</title>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P2T0WZ88JS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-P2T0WZ88JS');
+    </script>
+    <!-- Site Behaviour Analytics -->
+    <script type="text/javascript">
+      (
+        function() {
+          var sbSiteSecret = "82e6c6d1-3915-4216-a837-497137a529f2";
+          window.sitebehaviourTrackingSecret = sbSiteSecret;
+          var scriptElement = document.createElement('script');
+          scriptElement.async = true;
+          scriptElement.id = "site-behaviour-script-v2";
+          scriptElement.src = "https://sitebehaviour-cdn.fra1.cdn.digitaloceanspaces.com/index.min.js?sitebehaviour-secret=" + sbSiteSecret;
+          document.head.appendChild(scriptElement); 
+        }
+      )()
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
