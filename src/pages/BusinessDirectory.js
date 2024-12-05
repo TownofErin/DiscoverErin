@@ -515,7 +515,8 @@ const BusinessDirectory = () => {
               <span className="text-gray-600">
                 Showing {places.length} {places.length === 1 ? 'business' : 'businesses'}
               </span>
-              <div className="w-32">
+              <div className="w-[8.8rem]"
+>
                 <SelectWithChevron
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
