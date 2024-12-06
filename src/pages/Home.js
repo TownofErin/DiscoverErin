@@ -34,7 +34,7 @@ const Home = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section with Navigation */}
-      <div className="relative w-full">
+      <div className="relative">
         {/* Hero Background */}
         <div className="absolute inset-0 w-full h-[400px] md:h-711 overflow-hidden">
           {/* Fallback/Loading Image */}
@@ -70,11 +70,11 @@ const Home = () => {
         </div>
 
         {/* Header Content */}
-        <div className="relative">
+        <div className="relative h-[400px] md:h-711">
           <Navigation />
           
           {/* Hero Content */}
-          <div className="h-[400px] md:h-711 flex items-center justify-center">
+          <div className="h-full flex items-center justify-center">
             <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 text-white leading-tight">
                 Welcome to Erin
