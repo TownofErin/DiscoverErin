@@ -34,9 +34,9 @@ const Home = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section with Navigation */}
-      <div className="relative">
+      <div className="relative overflow-hidden">
         {/* Hero Background */}
-        <div className="absolute inset-0 w-full h-[400px] md:h-711 overflow-hidden">
+        <div className="absolute inset-0 w-full h-[300px] md:h-711">
           {/* Fallback/Loading Image */}
           <img
             src="https://video.gumlet.io/6752f217948718dd942768a3/6752f614e7e8e499ed293000/thumbnail-1-0.png?v=1733490339012"
@@ -66,20 +66,20 @@ const Home = () => {
               onLoad={() => setIsVideoLoaded(true)}
             />
           </div>
-          <div className="absolute inset-0 bg-black opacity-40"></div>
+          <div className="absolute inset-0 bg-black/30"></div>
         </div>
 
         {/* Header Content */}
-        <div className="relative h-[400px] md:h-711">
+        <div className="relative">
           <Navigation />
           
           {/* Hero Content */}
-          <div className="h-full flex items-center justify-center">
+          <div className="h-[300px] md:h-711 flex items-center justify-center">
             <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 text-white leading-tight">
+              <h1 className="text-2xl md:text-6xl font-bold mb-2 md:mb-6 text-white leading-tight">
                 Welcome to Erin
               </h1>
-              <p className="text-lg md:text-xl text-white font-light max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base md:text-xl text-white font-light max-w-2xl mx-auto leading-snug md:leading-relaxed">
                 A vibrant, friendly rural town in Ontario with charming warmth, agri-tourism adventures, an active equestrian community, and enriching experiences.
               </p>
             </div>
@@ -88,7 +88,7 @@ const Home = () => {
       </div>
 
       {/* Featured Events Section */}
-      <section className="py-8 md:py-12 bg-gray-50">
+      <section className="py-8 md:py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 md:mb-8">
             Upcoming Events
