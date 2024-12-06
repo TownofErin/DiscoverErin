@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import InstagramFeed from '../components/InstagramFeed';
@@ -6,6 +6,8 @@ import EventCarousel from '../components/EventCarousel';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+
   const categories = [
     {
       title: "Agri-Tourism",
@@ -32,14 +34,38 @@ const Home = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section with Navigation */}
-      <div className="relative">
+      <div className="relative w-full">
         {/* Hero Background */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 w-full h-[400px] md:h-711 overflow-hidden">
+          {/* Fallback/Loading Image */}
           <img
-            src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/home/farmBG.webp"
+            src="https://video.gumlet.io/6752f217948718dd942768a3/6752f614e7e8e499ed293000/thumbnail-1-0.png?v=1733490339012"
             alt="Erin countryside"
-            className="w-full h-[400px] md:h-711 object-cover object-top"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isVideoLoaded ? 'opacity-0' : 'opacity-100'}`}
           />
+          {/* Video Background */}
+          <div 
+            className={`absolute inset-0 w-full h-full transition-opacity duration-300 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <iframe 
+              title="Background Video"
+              src="https://play.gumlet.io/embed/6752f614e7e8e499ed293000?autoplay=true&muted=true&controls=false"
+              style={{ 
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                width: '200%',
+                height: '200%',
+                transform: 'translate(-50%, -50%) scale(1)',
+                border: 'none',
+                pointerEvents: 'none',
+                minWidth: '100%',
+                minHeight: '100%'
+              }}
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+              onLoad={() => setIsVideoLoaded(true)}
+            />
+          </div>
           <div className="absolute inset-0 bg-black opacity-40"></div>
         </div>
 
@@ -50,10 +76,10 @@ const Home = () => {
           {/* Hero Content */}
           <div className="h-[400px] md:h-711 flex items-center justify-center">
             <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-4xl md:text-7xl font-bold mb-4 md:mb-6 text-white leading-tight">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 text-white leading-tight">
                 Welcome to Erin
               </h1>
-              <p className="text-lg md:text-2xl text-white font-light max-w-2xl mx-auto leading-relaxed">
+              <p className="text-lg md:text-xl text-white font-light max-w-2xl mx-auto leading-relaxed">
                 A vibrant, friendly rural town in Ontario with charming warmth, agri-tourism adventures, an active equestrian community, and enriching experiences.
               </p>
             </div>
