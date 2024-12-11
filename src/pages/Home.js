@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import InstagramFeed from '../components/InstagramFeed';
@@ -6,8 +6,6 @@ import EventCarousel from '../components/EventCarousel';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-
   const categories = [
     {
       title: "Agri-Tourism",
@@ -37,35 +35,11 @@ const Home = () => {
       <div className="relative overflow-hidden">
         {/* Hero Background */}
         <div className="absolute inset-0 w-full h-[300px] md:h-711">
-          {/* Fallback/Loading Image */}
           <img
-            src="https://video.gumlet.io/6752f217948718dd942768a3/6752f614e7e8e499ed293000/thumbnail-1-0.png?v=1733490339012"
+            src="https://vtzfrysrrermupdjfsnh.supabase.co/storage/v1/object/public/img/home/farmBG.webp"
             alt="Erin countryside"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isVideoLoaded ? 'opacity-0' : 'opacity-100'}`}
+            className="absolute inset-0 w-full h-full object-cover"
           />
-          {/* Video Background */}
-          <div 
-            className={`absolute inset-0 w-full h-full transition-opacity duration-300 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <iframe 
-              title="Background Video"
-              src="https://play.gumlet.io/embed/6752f614e7e8e499ed293000?autoplay=true&muted=true&controls=false"
-              style={{ 
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                width: '200%',
-                height: '200%',
-                transform: 'translate(-50%, -50%) scale(1)',
-                border: 'none',
-                pointerEvents: 'none',
-                minWidth: '100%',
-                minHeight: '100%'
-              }}
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-              onLoad={() => setIsVideoLoaded(true)}
-            />
-          </div>
           <div className="absolute inset-0 bg-black/30"></div>
         </div>
 
